@@ -6,7 +6,8 @@
 * Postgres: 12
 
 ## Setup
-To run this project run docker-compose:
+To run this project, add .env and run docker-compose:
 ```
+cp .env-example .env
 docker-compose up
 ```
