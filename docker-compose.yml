@@ -1,0 +1,44 @@
+version: '3'
+
+services:
+  base_main: &base 
+    build:
+      context: .
+      dockerfile: ./docker/containers/app/Dockerfile
+    stdin_open: true
+    tty: true
+    volumes:
+      - .:/code
+      - ./docker/shared:/shared
+      - ./docker/data/app_venv:/venv3
+      - ./docker/data/home/app:/root
+      - ./docker/containers/app:/cont
+    networks:
+      - user_net
+    depends_on:
+      - user_db
+
+  user_main:
+    <<: *base
+    env_file:
+      - .env
+    command: ["/cont/entrypoint.sh"]
+    ports:
+      - ${UVICORN_MAP_PORT}:8081
+
+  user_db:
+    env_file:
+      - .env
+    image: postgres:12
+    volumes:
+      - ./docker/data/db:/var/lib/postgresql/data
+      - ./docker/shared/docker-entrypoint-initdb.d:/docker-entrypoint-initdb.d
+      - ./docker/shared:/shared
+    ports:
+      - 5432:5432
+    networks:
+      - user_net
+
+networks:
+  user_net:
+    name: user_net
