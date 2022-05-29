@@ -1,5 +1,4 @@
 from typing import Callable
-from functools import lru_cache
 
 from dotenv import load_dotenv
 from pydantic import BaseSettings, PostgresDsn
@@ -16,7 +15,6 @@ class Settings(BaseSettings):
     API_VERSION: str
 
 
-@lru_cache()
 def _configure_initial_settings() -> Callable[[], Settings]:
     load_dotenv()
     settings = Settings()
