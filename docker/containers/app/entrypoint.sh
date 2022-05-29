@@ -11,5 +11,7 @@ until postgres_ready; do
 done
 >&2 echo 'PostgreSQL is available.'
 
+alembic upgrade head
+
 uvicorn src.main:app --host 0.0.0.0 --port 8081 --reload
 

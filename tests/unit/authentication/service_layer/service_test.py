@@ -1,6 +1,7 @@
 import pytest
 from src.authentication.adapters.services import Argon2HashService
-from src.authentication.domain.model import EmailNotUniqueError, User
+from src.authentication.domain.model import User
+from src.authentication.domain.exceptions import EmailNotUniqueError
 from src.authentication.domain.repository import FakeRepository
 
 from src.authentication.service_layer import services
@@ -35,13 +36,14 @@ def test_raise_email_not_unique_exception_if_try_to_register_same_user():
 @pytest.mark.unit
 def test_registered_user_password_is_hashed():
     new_user_password = "password"
-    new_user = _get_user()
+    new_user = _get_user(password=new_user_password)
     repository = FakeRepository([])
 
     services.register_user(user=new_user,
                            hash_service=hash_service,
                            repo=repository)
 
+    assert len(new_user.password) > len(new_user_password)
     assert new_user.password != new_user_password
 
 
