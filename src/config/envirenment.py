@@ -13,6 +13,10 @@ class Settings(BaseSettings):
     DB_NAME: str
     WEB_APP_DEBUG: bool
     API_VERSION: str
+    JWT_SECRET: str
+    JWT_ACCESS_TOKEN_EXPIRE_MINUTES: int
+    JWT_REFRESH_TOKEN_EXPIRE_MINUTES: int
+    JWT_ALGORITHM: str
 
 
 def _configure_initial_settings() -> Callable[[], Settings]:

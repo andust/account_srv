@@ -26,7 +26,7 @@ def register(user: user_dto.UserCreate, db: Session = Depends(get_db)):
             user=User(full_name=user.full_name,
                       email=user.email,
                       password=user.password),
-            hash_service=Argon2HashService(),
+            hash_service=Argon2HashService,
             repo=UserSqlAlchemyRepository(db))
 
         return user_dto.User(id=created_user.id, full_name=created_user.full_name, email=created_user.email)
