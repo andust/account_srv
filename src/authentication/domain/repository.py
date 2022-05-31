@@ -3,7 +3,7 @@ from src.authentication.domain import model
 
 
 class UserRepository(Protocol):
-    def add(self, user: model.User):
+    def add(self, user: model.User) -> None:
         ...
 
     def get(self, id: int) -> model.User | None:
@@ -24,7 +24,7 @@ class FakeRepository:
     def __init__(self, users) -> None:
         self._users = set(users)
 
-    def add(self, user: model.User):
+    def add(self, user: model.User) -> None:
         self._users.add(user)
 
     def get(self, id: int) -> model.User | None:

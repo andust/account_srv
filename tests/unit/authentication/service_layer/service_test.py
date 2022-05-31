@@ -2,7 +2,7 @@ import pytest
 
 from src.authentication.adapters.services import Argon2HashService, JWTService
 from src.authentication.domain.model import User
-from src.authentication.domain.exceptions import EmailNotUniqueError
+from src.authentication.domain.exceptions import EmailNotUniqueError, PasswordValidationError, UserNotFoundError
 from src.authentication.domain.repository import FakeRepository
 from src.authentication.service_layer import services
 from src.config.envirenment import get_settings
@@ -11,7 +11,7 @@ from src.config.envirenment import get_settings
 _s = get_settings()
 
 
-def _get_user(name: str = "Andrzej", email: str = "andrzej@example.com", password: str = "password"):
+def _get_user(name: str = "Andrzej", email: str = "andrzej@example.com", password: str = "correct password"):
     return User(name, email, password)
 
 
@@ -39,11 +39,10 @@ def test_raise_email_not_unique_exception_if_try_to_register_same_user():
 def test_registered_user_password_is_hashed():
     new_user_password = "password"
     new_user = _get_user(password=new_user_password)
-    repository = FakeRepository([])
 
     services.register_user(user=new_user,
                            hash_service=Argon2HashService,
-                           repo=repository)
+                           repo=FakeRepository([]))
 
     assert len(new_user.password or "") > len(new_user_password)
     assert new_user.password != new_user_password
@@ -101,3 +100,33 @@ def test_successful_user_login():
     assert token.access_token is not None
     assert token.refresh_token is not None
     assert token.token_type == 'bearer'
+
+
+@pytest.mark.unit
+def test_user_not_found_login():
+    user_password = "user password"
+
+    with pytest.raises(UserNotFoundError):
+        services.login_user(email=_get_user(password=user_password).email,
+                            password=user_password,
+                            hash_service=Argon2HashService,
+                            jwt_service=JWTService,
+                            repo=FakeRepository([]))
+
+
+@pytest.mark.unit
+def test_user_wrong_passsword_login():
+    user_raw_password = "secret password"
+    new_user = _get_user(password=user_raw_password)
+    repository = FakeRepository([])
+
+    services.register_user(user=new_user,
+                           hash_service=Argon2HashService,
+                           repo=repository)
+
+    with pytest.raises(PasswordValidationError):
+        services.login_user(email=new_user.email,
+                            password="wrong password",
+                            hash_service=Argon2HashService,
+                            jwt_service=JWTService,
+                            repo=repository)
