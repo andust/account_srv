@@ -1,10 +1,9 @@
 version: '3'
 
 services:
-  base_main: &base 
+  user_main:
     build:
       context: .
-      dockerfile: ./docker/containers/app/Dockerfile
     stdin_open: true
     tty: true
     volumes:
@@ -12,17 +11,12 @@ services:
       - ./docker/shared:/shared
       - ./docker/data/app_venv:/venv3
       - ./docker/data/home/app:/root
-      - ./docker/containers/app:/cont
     networks:
       - user_net
     depends_on:
       - user_db
-
-  user_main:
-    <<: *base
     env_file:
       - .env
-    command: ["/cont/entrypoint.sh"]
     ports:
       - ${UVICORN_MAP_PORT}:8081
 

@@ -11,7 +11,6 @@ until postgres_ready; do
 done
 >&2 echo 'PostgreSQL is available.'
 
-alembic upgrade head
+cd src/infra/database/ && alembic upgrade head && cd ../../../
 
 uvicorn src.main:app --host 0.0.0.0 --port 8081 --reload
-
