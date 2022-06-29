@@ -1,1 +1,1 @@
-CREATE DATABASE user_srv_db;
+CREATE DATABASE account_srv_db;

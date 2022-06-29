@@ -1,7 +1,7 @@
 version: '3'
 
 services:
-  user_main:
+  account_main:
     build:
       context: .
     stdin_open: true
@@ -12,15 +12,15 @@ services:
       - ./docker/data/app_venv:/venv3
       - ./docker/data/home/app:/root
     networks:
-      - user_net
+      - account_net
     depends_on:
-      - user_db
+      - account_db
     env_file:
       - .env
     ports:
       - ${UVICORN_MAP_PORT}:8081
 
-  user_db:
+  account_db:
     env_file:
       - .env
     image: postgres:12
@@ -31,8 +31,8 @@ services:
     ports:
       - 5432:5432
     networks:
-      - user_net
+      - account_net
 
 networks:
-  user_net:
-    name: user_net
+  account_net:
+    name: account_net
