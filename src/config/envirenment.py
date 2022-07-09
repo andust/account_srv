@@ -6,8 +6,8 @@ from pydantic import BaseSettings, PostgresDsn
 
 class Settings(BaseSettings):
     DATABASE_PG_URL: PostgresDsn
-    DB_USER: str
-    DB_PASSWORD: str
+    POSTGRES_USER: str
+    POSTGRES_PASSWORD: str
     DB_HOST: str
     DB_PORT: int
     DB_NAME: str
@@ -17,6 +17,7 @@ class Settings(BaseSettings):
     JWT_ACCESS_TOKEN_EXPIRE_MINUTES: int
     JWT_REFRESH_TOKEN_EXPIRE_MINUTES: int
     JWT_ALGORITHM: str
+    NATS_URL: str
 
 
 def _configure_initial_settings() -> Callable[[], Settings]:

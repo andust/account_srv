@@ -13,4 +13,4 @@ done
 
 cd src/infra/database/ && alembic upgrade head && cd ../../../
 
-uvicorn src.main:app --host 0.0.0.0 --port 8081 --reload
+uvicorn src.main:app --host 0.0.0.0 --port $UVICORN_MAP_PORT --reload

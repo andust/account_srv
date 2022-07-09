@@ -13,6 +13,7 @@ services:
       - ./docker/data/home/app:/root
     networks:
       - account_net
+      - nats_net
     depends_on:
       - account_db
     env_file:
@@ -36,3 +37,5 @@ services:
 networks:
   account_net:
     name: account_net
+  nats_net:
+    name: nats_net
