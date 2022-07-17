@@ -19,7 +19,7 @@ services:
     env_file:
       - .env
     ports:
-      - ${UVICORN_MAP_PORT}:8081
+      - ${UVICORN_MAP_PORT}:${UVICORN_MAP_PORT}
 
   account_db:
     env_file:
@@ -30,7 +30,7 @@ services:
       - ./docker/shared/docker-entrypoint-initdb.d:/docker-entrypoint-initdb.d
       - ./docker/shared:/shared
     ports:
-      - 5432:5432
+      - 5432:${DB_PORT}
     networks:
       - account_net
 

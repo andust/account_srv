@@ -1,3 +1,4 @@
+# from src.infra.events.nats.client import nats_connect
 from fastapi import FastAPI
 from src.authentication.entrypoints import authentication
 from src.authentication.adapters import orm as authentication_orm
@@ -5,6 +6,7 @@ from src.authentication.adapters import orm as authentication_orm
 app = FastAPI()
 
 authentication_orm.start_mappers()
+
 
 @app.get("/")
 async def read_root():
