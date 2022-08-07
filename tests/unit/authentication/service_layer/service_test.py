@@ -3,7 +3,7 @@ import pytest
 from src.authentication.adapters.services import Argon2HashService, JWTService
 from src.authentication.domain.model import User
 from src.authentication.domain.exceptions import EmailNotUniqueError, PasswordValidationError, UserNotFoundError
-from src.authentication.domain.repository import FakeRepository
+from src.authentication.domain.repository import FakeUserRepository
 from src.authentication.service_layer import services
 from src.config.envirenment import get_settings
 
@@ -26,7 +26,7 @@ def test_hash_service_hash_string():
 @pytest.mark.unit
 def test_raise_email_not_unique_exception_if_try_to_register_same_user():
     new_user = _get_user()
-    repository = FakeRepository([])
+    repository = FakeUserRepository([])
     repository.add(new_user)
 
     with pytest.raises(EmailNotUniqueError):
@@ -42,7 +42,7 @@ def test_registered_user_password_is_hashed():
 
     services.register_user(user=new_user,
                            hash_service=Argon2HashService,
-                           repo=FakeRepository([]))
+                           repo=FakeUserRepository([]))
 
     assert len(new_user.password or "") > len(new_user_password)
     assert new_user.password != new_user_password
@@ -51,7 +51,7 @@ def test_registered_user_password_is_hashed():
 @pytest.mark.unit
 def test_user_is_saved_to_db():
     new_user = _get_user()
-    repository = FakeRepository([])
+    repository = FakeUserRepository([])
 
     services.register_user(user=new_user,
                            hash_service=Argon2HashService,
@@ -85,7 +85,7 @@ def test_jwt_service_decode_token():
 def test_successful_user_login():
     user_raw_password = "secret password"
     new_user = _get_user(password=user_raw_password)
-    repository = FakeRepository([])
+    repository = FakeUserRepository([])
 
     services.register_user(user=new_user,
                            hash_service=Argon2HashService,
@@ -111,14 +111,14 @@ def test_user_not_found_login():
                             password=user_password,
                             hash_service=Argon2HashService,
                             jwt_service=JWTService,
-                            repo=FakeRepository([]))
+                            repo=FakeUserRepository([]))
 
 
 @pytest.mark.unit
 def test_user_wrong_passsword_login():
     user_raw_password = "secret password"
     new_user = _get_user(password=user_raw_password)
-    repository = FakeRepository([])
+    repository = FakeUserRepository([])
 
     services.register_user(user=new_user,
                            hash_service=Argon2HashService,

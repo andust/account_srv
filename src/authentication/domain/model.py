@@ -1,4 +1,3 @@
-
 from typing import Any, Dict, Optional, Protocol
 from dataclasses import dataclass
 from enum import Enum
@@ -37,15 +36,18 @@ class JWTService(Protocol):
         ...
 
 
+@dataclass
 class User:
-    def __init__(self, full_name: str, email: str, password: Optional[str] = None):
-        self.id = None
-        self.full_name = full_name
-        self.email = email
-        self.password = password
+    full_name: str
+    email: str
+    password: Optional[str] = None
+    id: Optional[int] = None
 
     def hash_password(self, hash_service: HashService) -> None:
         if not self.password:
             raise PasswordValidationError()
 
         self.password = hash_service.hash_(self.password)
+
+    def __hash__(self) -> int:
+        return hash(self.id)
